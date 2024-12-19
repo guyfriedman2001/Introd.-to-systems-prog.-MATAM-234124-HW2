@@ -17,8 +17,8 @@ class MataMvidia{
     std::string getcreatorName() const;
     int getNumberOfFrames() const;
     Matrix operator[](int index);
-    MataMvidia& operator+=(const MataMvidia& other); //2 movies
-    MataMvidia& operator+=(const Matrix& newFrame); //movie + frame
+    MataMvidia& operator+=(const MataMvidia& other);
+    MataMvidia& operator+=(const Matrix& newFrame); 
     friend std::ostream &operator<<(std::ostream &os, const MataMvidia &movie);
     ~MataMvidia();
 };
