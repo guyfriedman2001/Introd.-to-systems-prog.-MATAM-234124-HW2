@@ -181,7 +181,8 @@ int Matrix::CalcFrobeniusNorm()const{
     int resCols = this->getCols();
     for (int i = 0; i < resRows; ++i) {
         for (int j = 0; j < resCols; ++j) {
-            sum += *(*this)(i, j);
+            int item = *(*this)(i, j);
+            sum += sqrt((abs(item*item)));
         }
     }
     return sum;
