@@ -187,6 +187,12 @@ int Matrix::CalcFrobeniusNorm()const{
     return sum;
 }
 
+Matrix& Matrix::transpose(){
+    Matrix transposeMatrix(*this);
+    transposeMatrix.is_traspose = !(this->is_traspose); 
+    return transposeMatrix;
+}
+
 Matrix::~Matrix(){
     delete[] data;
 }
