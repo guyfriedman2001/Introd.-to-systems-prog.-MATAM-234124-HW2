@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "configurations": [
+        {
+            "name": "C/C++: clang++ build and debug active file",  // Name of the configuration
+            "type": "cppdbg",  // Debugger type
+            "request": "launch",  // Launch configuration
+            "program": "${fileDirname}/${fileBasenameNoExtension}",  // Path to the output file
+            "args": [],  // No command-line arguments by default
+            "stopAtEntry": false,  // Don't stop at the entry point
+            "cwd": "${fileDirname}",  // Set the current working directory to the file directory
+            "environment": [],  // No environment variables by default
+            "externalConsole": false,  // Don't use an external console
+            "MIMode": "lldb",  // Debugger mode (LLDB for macOS and clang++)
+            "preLaunchTask": "guys config"  // Reference to the custom build task
+        }
+    ]
+}

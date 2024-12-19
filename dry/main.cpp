@@ -15,6 +15,9 @@ int main() {
     Pirate* strawHatCrew[2];
     strawHatCrew[0] = &luffy;
     strawHatCrew[1] = &zoro;
+
+    luffy.setBounty(1000000);
+    zoro.setBounty(500000);
     
     cout << "Straw Hat crew contains:" << endl;
     for (int i = 0; i < crewSize; i++) {

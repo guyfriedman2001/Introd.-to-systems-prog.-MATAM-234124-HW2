@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "guys config",  // Custom task label
+            "type": "shell",
+            "command": "/usr/bin/clang++",  // Path to clang++ compiler
+            "args": [
+                "-std=c++17",                // Use C++17 standard
+                "-pedantic-errors",          // Enforce pedantic errors
+                "-Wall",                     // Enable all warnings
+                "-Wextra",                   // Enable extra warnings
+                "-g",                        // Include debugging symbols
+                "${file}",                   // Compile the active file
+                "-o",                        // Specify the output file
+                "${fileDirname}/${fileBasenameNoExtension}"  // Output file with the same name as the source file
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true  // This makes it the default build task
+            },
+            "problemMatcher": ["$gcc"],  // Use the GCC problem matcher for errors
+            "detail": "Generated task by C/C++ extension"  // Task description
+        }
+    ]
+}
