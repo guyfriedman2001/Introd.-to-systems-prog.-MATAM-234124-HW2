@@ -37,6 +37,7 @@ Matrix& Matrix::operator=(const Matrix& other){
     return *this;
 }
 
+//TODO check if maybe can delete Dis
 int Matrix::calculateIndex(int i, int j){
     this->checkInput(i,j);
     int rotations = this->rotations % 4;
@@ -171,10 +172,19 @@ void Matrix::checkInput(int row, int coloum) const{
 }
 
 int Matrix::CalcFrobeniusNorm(const Matrix& matrice){
-    return matrice->CalcFrobeniusNorm();
+    return matrice.CalcFrobeniusNorm();
 }
-int Matrix::CalcFrobeniusNorm()const{
 
+int Matrix::CalcFrobeniusNorm()const{
+    int sum = 0;
+    int resRows = this->getRows();
+    int resCols = this->getCols();
+    for (int i = 0; i < resRows; ++i) {
+        for (int j = 0; j < resCols; ++j) {
+            sum += *(*this)(i, j);
+        }
+    }
+    return sum;
 }
 
 Matrix::~Matrix(){
