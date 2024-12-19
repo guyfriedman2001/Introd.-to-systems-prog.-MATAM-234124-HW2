@@ -29,5 +29,7 @@ class Matrix {
     void checkInput(int row, int coloum) const;
     int CalcFrobeniusNorm(const Matrix& matrice);
     int CalcFrobeniusNorm()const;
-    Matrix& transpose();
+    Matrix rotateClockwise();
+    Matrix rotateCounterClockwise();
+    Matrix transpose();
 };

@@ -187,10 +187,22 @@ int Matrix::CalcFrobeniusNorm()const{
     return sum;
 }
 
-Matrix& Matrix::transpose(){
+Matrix Matrix::transpose(){
     Matrix transposeMatrix(*this);
     transposeMatrix.is_traspose = !(this->is_traspose); 
     return transposeMatrix;
+}
+
+Matrix Matrix::rotateClockwise(){
+    Matrix clockwise(*this);
+    clockwise.rotations += 1; 
+    return clockwise;
+}
+
+Matrix Matrix::rotateCounterClockwise(){
+    Matrix counterClockwise(*this);
+    counterClockwise.rotations -= 1; 
+    return counterClockwise;
 }
 
 Matrix::~Matrix(){
