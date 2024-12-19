@@ -15,5 +15,6 @@ class Matrix {
     int getRows() const;
     int getCols() const;
     Matrix& operator=(const Matrix& other);
+    int calculateIndex(int i, int j);
     ~Matrix();
 };

@@ -35,6 +35,35 @@ Matrix& Matrix::operator=(const Matrix& other){
     return *this;
 }
 
+int Matrix::calculateIndex(int i, int j){
+    int rotations = this->rotations % 4;
+    int actualN = (is_traspose)?rows:cols;
+    int actualM = (is_traspose)?cols:rows;
+    int actualI = (is_traspose)?j:i;
+    int actualJ = (is_traspose)?i:j;
+
+    int temp = actualI;
+    int temp2 = actualJ;
+    switch(rotations){
+        case(1):
+            actualI = actualJ;
+            actualJ = actualN - 1 - temp;
+            break;
+        case(2):
+            actualI = actualN - 1 - temp;
+            actualJ = actualM - 1 - temp2;
+            break;
+        case(3):
+            actualI = actualM - 1 - actualJ;
+            actualJ = temp;
+            break;
+        default:
+            break;
+    }
+    return actualI*actualN + actualJ;
+
+}
+
 Matrix::~Matrix(){
     delete[] data;
 }
