@@ -1,4 +1,6 @@
 #include "Matrix.h"
+#include <cmath>
+
 
 Matrix::Matrix(int rows, int cols, int initiale) : rows(rows), cols(cols),
  data(new int[rows*cols]{initiale}),is_traspose(false), rotations(0) {
@@ -12,10 +14,10 @@ Matrix::Matrix(const Matrix& other): rows(other.rows), cols(other.cols),
 }
 
 int Matrix::getRows() const{
-    return this->rows;
+    return (this->is_traspose)?this->rows:this->cols;
 }
 int Matrix::getCols() const{
-    return this->cols;
+    return (this->is_traspose)?this->cols:this->rows;
 }
 
 Matrix& Matrix::operator=(const Matrix& other){
@@ -36,11 +38,12 @@ Matrix& Matrix::operator=(const Matrix& other){
 }
 
 int Matrix::calculateIndex(int i, int j){
+    this->checkInput(i,j);
     int rotations = this->rotations % 4;
-    int actualN = (is_traspose)?rows:cols;
-    int actualM = (is_traspose)?cols:rows;
-    int actualI = (is_traspose)?j:i;
-    int actualJ = (is_traspose)?i:j;
+    int actualN = this->getRows();
+    int actualM = this->getCols();
+    int actualI = (this->is_traspose)?j:i;
+    int actualJ = (this->is_traspose)?i:j;
 
     int temp = actualI;
     int temp2 = actualJ;
@@ -61,6 +64,116 @@ int Matrix::calculateIndex(int i, int j){
             break;
     }
     return actualI*actualN + actualJ;
+}
+
+int Matrix::calculateIndex(int i, int j) const{
+    this->checkInput(i,j);
+    int rotations = this->rotations % 4;
+    int actualN = this->getRows();
+    int actualM = this->getCols();
+    int actualI = (this->is_traspose)?j:i;
+    int actualJ = (this->is_traspose)?i:j;
+
+    int temp = actualI;
+    int temp2 = actualJ;
+    switch(rotations){
+        case(1):
+            actualI = actualJ;
+            actualJ = actualN - 1 - temp;
+            break;
+        case(2):
+            actualI = actualN - 1 - temp;
+            actualJ = actualM - 1 - temp2;
+            break;
+        case(3):
+            actualI = actualM - 1 - actualJ;
+            actualJ = temp;
+            break;
+        default:
+            break;
+    }
+    return actualI*actualN + actualJ;
+}
+
+int* Matrix::operator()(int row, int coloum){ //TODO ADD CONST VERSION
+    return &(this->data[this->calculateIndex(row,coloum)]);
+}
+
+int* Matrix::operator()(int row, int coloum) const{ //TODO ADD CONST VERSION
+    return &(this->data[this->calculateIndex(row,coloum)]);
+}
+
+bool Matrix::sameDimensions(const Matrix& matrice) const{
+    return (this->cols == matrice.cols) && (this->rows == matrice.rows);
+}
+
+bool Matrix::canMultiply(const Matrix& matrice) const{
+    return (this->cols == matrice.rows);
+}
+
+
+
+Matrix Matrix::operator+=(const Matrix& other){
+    if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
+    int resRows = this->getRows();
+    int resCols = this->getCols();
+    for (int i = 0; i < resRows; ++i) {
+        for (int j = 0; j < resCols; ++j) {
+            *(*this)(i, j) = *(*this)(i, j) + *other(i, j);
+        }
+    }
+    return *this;
+    
+}
+
+Matrix Matrix::operator+(const Matrix& other) const {
+    //if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
+    int resRows = this->getRows();
+    int resCols = this->getCols();
+    Matrix result(resRows, resCols, 0);
+    result += *this;
+    result += other;
+
+    //for (int i = 0; i < resRows; ++i) {
+    //    for (int j = 0; j < resCols; ++j) {
+    //        *result(i, j) = *(*this)(i, j) + *other(i, j);
+    //    }
+    //}
+
+    return result;
+}
+
+/**
+ * 
+Matrix Matrix::operator+(const Matrix& left, const Matrix& right) {
+    if (!this->sameDimensions(other)) {exitWithError(MatamErrorType::UnmatchedSizes);}
+
+    Matrix result(this->rows, this->cols, 0);
+
+    for (int i = 0; i < this->getRows(); ++i) {
+        for (int j = 0; j < this->getCols(); ++j) {
+            *result(i, j) = *(*this)(i, j) + *other(i, j);
+        }
+    }
+
+    return result;
+}
+ */
+
+void Matrix::checkInput(int row, int coloum) const{
+    int thisRows = this->getRows();
+    int thisCols = this->getCols();
+    int actualI = (this->is_traspose)?row:coloum;
+    int actualJ = (this->is_traspose)?row:coloum;
+    if ((thisRows <= actualI)||(thisCols <= actualJ)){
+        exitWithError(MatamErrorType::OutOfBounds);
+    }
+}
+
+int Matrix::CalcFrobeniusNorm(const Matrix& matrice){
+    return matrice->CalcFrobeniusNorm();
+}
+int Matrix::CalcFrobeniusNorm()const{
 
 }
 
