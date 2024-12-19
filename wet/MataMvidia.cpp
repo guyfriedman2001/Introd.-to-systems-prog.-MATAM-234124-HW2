@@ -3,8 +3,11 @@
 #include <string>
 #include <iostream>
 
-MataMvidia::MataMvidia(const std::string& movieName, const std::string& creator, Matrix* frames, int numberOfFrames): movieName(movieName),
- creator(creator),frames(new Matrix[numberOfFrames]), numberOfFrames(numberOfFrames) {
+MataMvidia::MataMvidia(const std::string& movieName, const std::string& creator, Matrix* frames, int numberOfFrames): 
+movieName(movieName), creator(creator),frames(new Matrix[numberOfFrames]), numberOfFrames(numberOfFrames) {
+    if(numberOfFrames < 0){
+        exitWithError(MatamErrorType::OutOfBounds); 
+    }
     for(int i=0; i<numberOfFrames; i++){
         this->frames[i] =  frames[i];
     }
@@ -70,8 +73,8 @@ MataMvidia& MataMvidia::operator+=(const Matrix& newFrame){
     return (*this += tempMovie);
 }
 
-MataMvidia operator+(MataMvidia& leftMovie, MataMvidia& rightMovie){
-    return (leftMovie+=rightMovie);
+MataMvidia operator+(const MataMvidia& leftMovie, const MataMvidia& rightMovie){
+    return (MataMvidia(leftMovie) += rightMovie);
 }
 
 std::ostream &operator<<(std::ostream &os, const MataMvidia& movie){
