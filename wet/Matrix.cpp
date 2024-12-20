@@ -37,6 +37,7 @@ Matrix& Matrix::operator=(const Matrix& other){
     return *this;
 }
 
+/** 
 //TODO check if maybe can delete Dis
 int Matrix::calculateIndex(int i, int j){
     this->checkInput(i,j);
@@ -66,6 +67,7 @@ int Matrix::calculateIndex(int i, int j){
     }
     return actualI*actualN + actualJ;
 }
+*/
 
 int Matrix::calculateIndex(int i, int j) const{
     this->checkInput(i,j);
@@ -135,7 +137,7 @@ Matrix Matrix::operator+(const Matrix& other) const {
     result += *this;
     result += other;
 
-    //for (int i = 0; i < resRows; ++i) {
+    //for (int i = 0; i < resRows; ++i) { //FIXME after debugging if everything is working, delete these commented lines
     //    for (int j = 0; j < resCols; ++j) {
     //        *result(i, j) = *(*this)(i, j) + *other(i, j);
     //    }
@@ -188,19 +190,19 @@ int Matrix::CalcFrobeniusNorm()const{
     return sum;
 }
 
-Matrix Matrix::transpose(){
+Matrix Matrix::transpose() const{
     Matrix transposeMatrix(*this);
     transposeMatrix.is_traspose = !(this->is_traspose); 
     return transposeMatrix;
 }
 
-Matrix Matrix::rotateClockwise(){
+Matrix Matrix::rotateClockwise() const{
     Matrix clockwise(*this);
     clockwise.rotations += 1; 
     return clockwise;
 }
 
-Matrix Matrix::rotateCounterClockwise(){
+Matrix Matrix::rotateCounterClockwise() const{
     Matrix counterClockwise(*this);
     counterClockwise.rotations -= 1; 
     return counterClockwise;

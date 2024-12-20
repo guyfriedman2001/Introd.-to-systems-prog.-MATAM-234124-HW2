@@ -15,7 +15,7 @@ class Matrix {
     int getRows() const;
     int getCols() const;
     Matrix& operator=(const Matrix& other);
-    int calculateIndex(int row, int coloum);
+    //int calculateIndex(int row, int coloum);
     int calculateIndex(int row, int coloum) const;
     ~Matrix();
     int* operator()(int row, int coloum);
@@ -26,10 +26,34 @@ class Matrix {
     Matrix operator+(const Matrix& other) const;
     Matrix operator+=(const Matrix& other);
     //Matrix operator+(const Matrix& left, const Matrix& right);
+
+    /**
+     * check if a given input is within the matrix bounds
+     * if it is - do nothing
+     * if it is not - write appropriate message to cerr
+     */
     void checkInput(int row, int coloum) const;
     int CalcFrobeniusNorm(const Matrix& matrice);
     int CalcFrobeniusNorm()const;
-    Matrix rotateClockwise();
-    Matrix rotateCounterClockwise();
-    Matrix transpose();
+
+    /**
+     * return a copy the matrix rotated clockwise 90 degrees
+     * 
+     * @return - a copy of the called matrix, rotated 90 degrees clockwise
+     */
+    Matrix rotateClockwise() const;
+
+    /**
+     * return a copy the matrix rotated counter clockwise 90 degrees
+     * 
+     * @return - a copy of the called matrix, rotated 90 degrees counter clockwise
+     */
+    Matrix rotateCounterClockwise() const;
+
+    /**
+     * return a transposed copy the matrix
+     * 
+     * @return - a copy of the called matrix, transposed
+     */
+    Matrix transpose() const;
 };
