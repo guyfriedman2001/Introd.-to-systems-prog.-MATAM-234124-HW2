@@ -221,10 +221,25 @@ Matrix& Matrix::operator*=(int scalar){
     *this = *this * scalar;
     return *this;
 }
-/*Matrix Matrix::operator*(const Matrix& matrice){
+Matrix Matrix::operator*(const Matrix& matrice){
+    if(!(canMultiply(matrice))){
+        exitWithError(MatamErrorType::UnmatchedSizes);
+    }
+    Matrix multpliedMatrix(this->getRows(), matrice.getCols(), 0);
+    for (int i = 0; i <  matrice.getCols(); ++i) {
+        for (int j = 0; j < this->getRows(); ++j) {
+            for(int k=0; k< matrice.getRows(); k++){
+                *(multpliedMatrix)(j,i) += *(*this)(j,k) * *(matrice)(k,i);
+            } 
+        }
+    }
+    return multpliedMatrix;
 
 }
-Matrix& Matrix::operator*=(const Matrix& matrice);*/
+Matrix& Matrix::operator*=(const Matrix& matrice){
+    *this = *this * matrice;
+    return *this;
+}
 
 Matrix operator*(int scalar, const Matrix& matrice){
     Matrix tempMatrix(matrice);
