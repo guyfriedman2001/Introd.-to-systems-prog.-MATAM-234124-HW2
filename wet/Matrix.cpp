@@ -208,6 +208,30 @@ Matrix Matrix::rotateCounterClockwise() const{
     return counterClockwise;
 }
 
+Matrix Matrix::operator*(int scalar){
+     Matrix tempMatrix(*this);
+     for(int i = 0; i<rows*cols; i++){
+        tempMatrix.data[i] *= scalar;
+     }
+     return tempMatrix;
+}
+
+
+Matrix& Matrix::operator*=(int scalar){
+    *this = *this * scalar;
+    return *this;
+}
+/*Matrix Matrix::operator*(const Matrix& matrice){
+
+}
+Matrix& Matrix::operator*=(const Matrix& matrice);*/
+
+Matrix operator*(int scalar, const Matrix& matrice){
+    Matrix tempMatrix(matrice);
+    return (tempMatrix * scalar);
+}
+
+
 Matrix::~Matrix(){
     delete[] data;
 }
