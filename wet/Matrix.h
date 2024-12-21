@@ -25,7 +25,7 @@ class Matrix {
     bool canMultiply(const Matrix& matrice) const;
     Matrix operator+(const Matrix& other) const;
     Matrix operator+=(const Matrix& other);
-    //Matrix operator+(const Matrix& left, const Matrix& right);
+    //Matrix operator+(const Matrix& left, const Matrix& right); need to be outside of the class func
 
     /**
      * check if a given input is within the matrix bounds
@@ -56,4 +56,10 @@ class Matrix {
      * @return - a copy of the called matrix, transposed
      */
     Matrix transpose() const;
+
+    Matrix operator*(int scalar);
+    Matrix& operator*=(int scalar);
+    Matrix operator*(const Matrix& matrice);
+    Matrix& operator*=(const Matrix& matrice);
 };
+Matrix operator*(int scalar, const Matrix& matrice);
