@@ -106,12 +106,12 @@ int* Matrix::operator()(int row, int coloum) const{ //TODO ADD CONST VERSION
     return &(this->data[this->calculateIndex(row,coloum)]);
 }
 
-bool Matrix::sameDimensions(const Matrix& matrice) const{
-    return (this->cols == matrice.cols) && (this->rows == matrice.rows);
+inline bool Matrix::sameDimensions(const Matrix& matrice) const{
+    return (this->getCols() == matrice.getCols()) && (this->getRows() == matrice.getRows());
 }
 
-bool Matrix::canMultiply(const Matrix& matrice) const{
-    return (this->cols == matrice.rows);
+inline bool Matrix::canMultiply(const Matrix& matrice) const{
+    return (this->getCols() == matrice.getRows());
 }
 
 
@@ -130,7 +130,7 @@ Matrix Matrix::operator+=(const Matrix& other){
 }
 
 Matrix Matrix::operator+(const Matrix& other) const {
-    //if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
+    if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
     int resRows = this->getRows();
     int resCols = this->getCols();
     Matrix result(resRows, resCols, 0);
