@@ -246,7 +246,15 @@ Matrix operator*(int scalar, const Matrix& matrice){
     return (tempMatrix * scalar);
 }
 
-
+std::ostream &operator<<(std::ostream &os, const Matrix& matrice){
+    for(int i = 0; i<matrice.getRows(); i++){
+        for(int j = 0; j<matrice.getCols(); j++){
+            os << "|" << matrice(i,j);
+        }
+        os << "|" << std::endl;
+    }
+    return os;
+}
 Matrix::~Matrix(){
     delete[] data;
 }

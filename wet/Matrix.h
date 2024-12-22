@@ -16,13 +16,13 @@ class Matrix {
     int getCols() const;
     Matrix& operator=(const Matrix& other);
     //int calculateIndex(int row, int coloum);
-    int calculateIndex(int row, int coloum) const;
+    int calculateIndex(int row, int coloum) const; //needs to move to private
     ~Matrix();
     int* operator()(int row, int coloum);
     int* operator()(int row, int coloum) const;
     //int* operator()(int row, int coloum); //TODO ADD CONST
-    bool sameDimensions(const Matrix& matrice) const;
-    bool canMultiply(const Matrix& matrice) const;
+    bool sameDimensions(const Matrix& matrice) const; //needs to move to private
+    bool canMultiply(const Matrix& matrice) const; //needs to move to private
     Matrix operator+(const Matrix& other) const;
     Matrix operator+=(const Matrix& other);
 
@@ -31,7 +31,7 @@ class Matrix {
      * if it is - do nothing
      * if it is not - write appropriate message to cerr
      */
-    void checkInput(int row, int coloum) const;
+    void checkInput(int row, int coloum) const; //needs to move to private
     int CalcFrobeniusNorm(const Matrix& matrice);
     int CalcFrobeniusNorm()const;
 
@@ -60,6 +60,7 @@ class Matrix {
     Matrix& operator*=(int scalar);
     Matrix operator*(const Matrix& matrice);
     Matrix& operator*=(const Matrix& matrice);
+    friend std::ostream &operator<<(std::ostream &os, const Matrix& matrice);
 };
 Matrix operator*(int scalar, const Matrix& matrice);
 //Matrix operator+(const Matrix& left, const Matrix& right);
