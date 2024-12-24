@@ -285,6 +285,36 @@ bool operator!=(const Matrix& left, const Matrix& right){
     return (!(left == right));
 }
 
+int Matrix::CalcDeterminant(const Matrix& matrice){
+    if(matrice.getRows() != matrice.getCols()){
+        exitWithError(MatamErrorType::NotSquareMatrix);
+        return 0;        
+    }
+    if(matrice.getRows() == 0){
+        return 0;
+    }
+    if(matrice.getRows() == 1){
+        return *matrice(0,0);
+    }
+    if(matrice.getRows() == 2){
+        return ((*matrice(0,0) * *matrice(1,1)) - (*matrice(0,1) * *matrice(1,0)));
+    }
+    int det = 0;
+    Matrix temp(matrice.getRows()-1, matrice.getCols()-1);
+    for(int i = 0; i< matrice.getRows(); i++){
+        for(int j = 0; j < matrice.getRows(); j++){
+            if(j!=i){
+                for(int k = 0; k < temp. getRows(); k++){
+                    *temp(j,k) = *matrice(j,k+1);
+                }
+            }
+            
+        }
+        det += pow(-1,i) * *matrice(i,0) * CalcDeterminant(temp);
+    }
+    return det;
+}
+
 Matrix::~Matrix(){
     delete[] data;
 }

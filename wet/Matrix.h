@@ -64,6 +64,7 @@ class Matrix {
     Matrix operator-(const Matrix& matrice);
     Matrix& operator-=(const Matrix& matrice);
     friend bool operator==(const Matrix& left, const Matrix& right);
+    static int CalcDeterminant(const Matrix& matrice);
 };
 Matrix operator*(int scalar, const Matrix& matrice);
 bool operator!=(const Matrix& left, const Matrix& right);
