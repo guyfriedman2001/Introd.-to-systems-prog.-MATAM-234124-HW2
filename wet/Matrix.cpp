@@ -114,36 +114,33 @@ inline bool Matrix::canMultiply(const Matrix& matrice) const{
     return (this->getCols() == matrice.getRows());
 }
 
-
-
-Matrix Matrix::operator+=(const Matrix& other){
-    if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
-    int resRows = this->getRows();
-    int resCols = this->getCols();
-    for (int i = 0; i < resRows; ++i) {
-        for (int j = 0; j < resCols; ++j) {
-            *(*this)(i, j) = *(*this)(i, j) + *other(i, j);
-        }
-    }
-    return *this;
-    
-}
-
 Matrix Matrix::operator+(const Matrix& other) const {
     if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
     int resRows = this->getRows();
     int resCols = this->getCols();
-    Matrix result(resRows, resCols, 0);
-    result += *this;
-    result += other;
-
-    //for (int i = 0; i < resRows; ++i) { //FIXME after debugging if everything is working, delete these commented lines
-    //    for (int j = 0; j < resCols; ++j) {
-    //        *result(i, j) = *(*this)(i, j) + *other(i, j);
-    //    }
-    //}
+    Matrix result(other);
+    for (int i = 0; i < resRows; ++i) { 
+        for (int j = 0; j < resCols; ++j) {
+            *result(i, j) += *(*this)(i, j);
+        }
+    }
 
     return result;
+}
+
+Matrix& Matrix::operator+=(const Matrix& other){
+    if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
+    *this = *this + other;
+    return *this;
+    // int resRows = this->getRows();
+    // int resCols = this->getCols();
+    // for (int i = 0; i < resRows; ++i) {
+    //     for (int j = 0; j < resCols; ++j) {
+    //         *(*this)(i, j) = *(*this)(i, j) + *other(i, j);
+    //     }
+    // }
+    // return *this;
+    
 }
 
 /**
@@ -208,7 +205,7 @@ Matrix Matrix::rotateCounterClockwise() const{
     return counterClockwise;
 }
 
-Matrix Matrix::operator*(int scalar){
+Matrix Matrix::operator*(int scalar) const{
      Matrix tempMatrix(*this);
      for(int i = 0; i<rows*cols; i++){
         tempMatrix.data[i] *= scalar;
@@ -221,7 +218,7 @@ Matrix& Matrix::operator*=(int scalar){
     *this = *this * scalar;
     return *this;
 }
-Matrix Matrix::operator*(const Matrix& matrice){
+Matrix Matrix::operator*(const Matrix& matrice) const{
     if(!(canMultiply(matrice))){
         exitWithError(MatamErrorType::UnmatchedSizes);
     }
@@ -256,7 +253,7 @@ std::ostream &operator<<(std::ostream &os, const Matrix& matrice){
     return os;
 }
 
-Matrix Matrix::operator-(const Matrix& matrice){
+Matrix Matrix::operator-(const Matrix& matrice) const{
     Matrix tempMatrix(matrice);
     tempMatrix = -tempMatrix;
     return (*this + tempMatrix);
