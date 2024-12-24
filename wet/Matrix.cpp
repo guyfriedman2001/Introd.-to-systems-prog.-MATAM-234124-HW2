@@ -255,6 +255,36 @@ std::ostream &operator<<(std::ostream &os, const Matrix& matrice){
     }
     return os;
 }
+
+Matrix Matrix::operator-(const Matrix& matrice){
+    Matrix tempMatrix(matrice);
+    tempMatrix = -tempMatrix;
+    return (*this + tempMatrix);
+}
+
+Matrix& Matrix::operator-=(const Matrix& matrice){
+    *this = *this - matrice;
+    return *this;    
+}
+
+bool operator==(const Matrix& left, const Matrix& right){
+    if(!left.sameDimensions(right)){
+        return false;
+    }
+    for(int i = 0; i < left.getRows(); i++){
+        for(int j = 0; j < left.getCols(); j++){
+            if(*left(i,j) != *right(i,j)){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool operator!=(const Matrix& left, const Matrix& right){
+    return (!(left == right));
+}
+
 Matrix::~Matrix(){
     delete[] data;
 }

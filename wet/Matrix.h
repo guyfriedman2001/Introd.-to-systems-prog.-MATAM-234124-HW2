@@ -61,6 +61,10 @@ class Matrix {
     Matrix operator*(const Matrix& matrice);
     Matrix& operator*=(const Matrix& matrice);
     friend std::ostream &operator<<(std::ostream &os, const Matrix& matrice);
+    Matrix operator-(const Matrix& matrice);
+    Matrix& operator-=(const Matrix& matrice);
+    friend bool operator==(const Matrix& left, const Matrix& right);
 };
 Matrix operator*(int scalar, const Matrix& matrice);
-//Matrix operator+(const Matrix& left, const Matrix& right);
+bool operator!=(const Matrix& left, const Matrix& right);
+//Matrix operator+(const Matrix& left, const Matrix& right);s
