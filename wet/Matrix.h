@@ -60,6 +60,10 @@ class Matrix {
     Matrix& operator*=(int scalar);
     Matrix operator*(const Matrix& matrice);
     Matrix& operator*=(const Matrix& matrice);
+    Matrix operator-() const;
+    Matrix operator+(const Matrix& matrice) const;
+    Matrix operator-(const Matrix& matrice) const;
+
     friend std::ostream &operator<<(std::ostream &os, const Matrix& matrice);
 };
 Matrix operator*(int scalar, const Matrix& matrice);
