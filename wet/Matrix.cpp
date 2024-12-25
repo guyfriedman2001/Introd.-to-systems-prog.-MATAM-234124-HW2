@@ -1,23 +1,42 @@
 #include "Matrix.h"
 #include <cmath>
 
-
-Matrix::Matrix(int rows, int cols, int initiale) : rows(rows), cols(cols),
- data(new int[rows*cols]{initiale}),is_traspose(false), rotations(0) {
+Matrix::Matrix(int rows, int cols, int initiale) : rows(rows), cols(cols), data(nullptr), is_traspose(false), rotations(0) {
+    if(rows > 0 && cols > 0){
+        data = new int[rows*cols]{initiale};
+    }
 }
 
 Matrix::Matrix(const Matrix& other): rows(other.rows), cols(other.cols),
- data(new int[other.rows*other.cols]),is_traspose(other.is_traspose), rotations(other.rotations){
-    for(int i=0; i< rows*cols; i++){
+ data(new int[(other.rows * other.cols)]),is_traspose(other.is_traspose), rotations(other.rotations){
+    for(int i=0; i< (other.rows * other.cols); i++){
         this->data[i] = other.data[i];
     }
 }
 
 int Matrix::getRows() const{
-    return (this->is_traspose)?this->rows:this->cols;
+    if(this->is_traspose){
+        if(this->rotations % 2 == 0){
+            return this->cols;
+        }
+        return this->rows;
+    }
+    else if(this->rotations % 2 == 0){
+        return this->rows;
+    }
+    return this->cols;
 }
 int Matrix::getCols() const{
-    return (this->is_traspose)?this->cols:this->rows;
+        if(this->is_traspose){
+        if(this->rotations % 2 == 0){
+            return this->rows;
+        }
+        return this->cols;
+    }
+    else if(this->rotations % 2 == 0){
+        return this->cols;
+    }
+    return this->rows;
 }
 
 Matrix& Matrix::operator=(const Matrix& other){
@@ -25,13 +44,15 @@ Matrix& Matrix::operator=(const Matrix& other){
     {
         return *this;
     }
-    delete this->data;
-    rows = other.rows;
-    cols = other.cols;
-    is_traspose = other.is_traspose;
-    rotations = other.rotations;
-    data = new int[rows*cols];
-    for(int i=0; i< rows*cols; i++){
+    if(this->data != nullptr){
+        delete[] this->data;
+    }
+     this->rows = other.rows;
+     this->cols = other.cols;
+     this->is_traspose = other.is_traspose;
+     this->rotations = other.rotations;
+     this->data = new int[(this->rows * this->cols)];
+    for(int i=0; i<  (this->rows * this->cols) ; i++){
         this->data[i] = other.data[i];
     }
     return *this;
@@ -71,15 +92,22 @@ int Matrix::calculateIndex(int i, int j){
 
 int Matrix::calculateIndex(int i, int j) const{
     this->checkInput(i,j);
-    int rotations = this->rotations % 4;
-    int actualN = this->getRows();
-    int actualM = this->getCols();
+    int actualRotations = this->rotations % 4;
+    // int actualN = this->getRows();
+    // int actualM = this->getCols();
+    int actualN = this->rows;
+    int actualM = this->cols;
     int actualI = (this->is_traspose)?j:i;
     int actualJ = (this->is_traspose)?i:j;
 
     int temp = actualI;
     int temp2 = actualJ;
-    switch(rotations){
+    switch(actualRotations){
+        case(0):
+        // if(this->is_traspose){
+        //     return actualJ*actualM + actualI;
+        // }
+        break;
         case(1):
             actualI = actualJ;
             actualJ = actualN - 1 - temp;
@@ -87,23 +115,28 @@ int Matrix::calculateIndex(int i, int j) const{
         case(2):
             actualI = actualN - 1 - temp;
             actualJ = actualM - 1 - temp2;
+            // if(this->is_traspose){
+            //     return actualJ*actualM + actualI;
+            // }
             break;
         case(3):
-            actualI = actualM - 1 - actualJ;
+            // actualI = actualJ - actualI;
+            // actualJ = 1 + actualJ;
+            actualI = actualM  - actualJ - 1;
             actualJ = temp;
             break;
         default:
             break;
     }
-    return actualI*actualN + actualJ;
+    return actualJ*actualN + actualI;
 }
 
-int* Matrix::operator()(int row, int coloum){ //TODO ADD CONST VERSION
-    return &(this->data[this->calculateIndex(row,coloum)]);
+int& Matrix::operator()(int row, int coloum){ //TODO ADD CONST VERSION
+    return (this->data[this->calculateIndex(row,coloum)]);
 }
 
-int* Matrix::operator()(int row, int coloum) const{ //TODO ADD CONST VERSION
-    return &(this->data[this->calculateIndex(row,coloum)]);
+int& Matrix::operator()(int row, int coloum) const{ //TODO ADD CONST VERSION
+    return (this->data[this->calculateIndex(row,coloum)]);
 }
 
 inline bool Matrix::sameDimensions(const Matrix& matrice) const{
@@ -115,16 +148,17 @@ inline bool Matrix::canMultiply(const Matrix& matrice) const{
 }
 
 Matrix Matrix::operator+(const Matrix& other) const {
-    if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
+    if (!this->sameDimensions(other)){
+        exitWithError(MatamErrorType::UnmatchedSizes);
+    }
     int resRows = this->getRows();
     int resCols = this->getCols();
     Matrix result(other);
-    for (int i = 0; i < resRows; ++i) { 
-        for (int j = 0; j < resCols; ++j) {
-            *result(i, j) += *(*this)(i, j);
+    for (int i = 0; i < resRows; i++) { 
+        for (int j = 0; j < resCols; j++) {
+            result(i, j) += (*this)(i, j);
         }
     }
-
     return result;
 }
 
@@ -163,9 +197,12 @@ Matrix Matrix::operator+(const Matrix& left, const Matrix& right) {
 void Matrix::checkInput(int row, int coloum) const{
     int thisRows = this->getRows();
     int thisCols = this->getCols();
-    int actualI = (this->is_traspose)?row:coloum;
-    int actualJ = (this->is_traspose)?row:coloum;
-    if ((thisRows <= actualI)||(thisCols <= actualJ)){
+    //int actualI = (this->is_traspose)?row:coloum;
+    //int actualJ = (this->is_traspose)?row:coloum;
+    //if ((thisRows <= actualI)||(thisCols <= actualJ)){
+    //    exitWithError(MatamErrorType::OutOfBounds);
+    //}
+    if ((thisRows <= row)||(thisCols <= coloum)){
         exitWithError(MatamErrorType::OutOfBounds);
     }
 }
@@ -180,7 +217,7 @@ int Matrix::CalcFrobeniusNorm()const{
     int resCols = this->getCols();
     for (int i = 0; i < resRows; ++i) {
         for (int j = 0; j < resCols; ++j) {
-            int item = *(*this)(i, j);
+            int item = (*this)(i, j);
             sum += sqrt((abs(item*item)));
         }
     }
@@ -195,13 +232,13 @@ Matrix Matrix::transpose() const{
 
 Matrix Matrix::rotateClockwise() const{
     Matrix clockwise(*this);
-    clockwise.rotations += 1; 
+    clockwise.rotations += 3; 
     return clockwise;
 }
 
 Matrix Matrix::rotateCounterClockwise() const{
     Matrix counterClockwise(*this);
-    counterClockwise.rotations -= 1; 
+    counterClockwise.rotations += 1; 
     return counterClockwise;
 }
 
@@ -226,7 +263,7 @@ Matrix Matrix::operator*(const Matrix& matrice) const{
     for (int i = 0; i <  matrice.getCols(); ++i) {
         for (int j = 0; j < this->getRows(); ++j) {
             for(int k=0; k< matrice.getRows(); k++){
-                *(multpliedMatrix)(j,i) += *(*this)(j,k) * *(matrice)(k,i);
+                (multpliedMatrix)(j,i) += (*this)(j,k) * (matrice)(k,i);
             } 
         }
     }
@@ -244,8 +281,11 @@ Matrix operator*(int scalar, const Matrix& matrice){
 }
 
 std::ostream &operator<<(std::ostream &os, const Matrix& matrice){
-    for(int i = 0; i<matrice.getRows(); i++){
-        for(int j = 0; j<matrice.getCols(); j++){
+    if(matrice.getRows() == 0 || matrice.getCols() == 0){
+        return os;
+    }
+    for(int i = 0; i < matrice.getRows(); i++){
+        for(int j = 0; j < matrice.getCols(); j++){
             os << "|" << matrice(i,j);
         }
         os << "|" << std::endl;
@@ -270,7 +310,7 @@ bool operator==(const Matrix& left, const Matrix& right){
     }
     for(int i = 0; i < left.getRows(); i++){
         for(int j = 0; j < left.getCols(); j++){
-            if(*left(i,j) != *right(i,j)){
+            if(left(i,j) != right(i,j)){
                 return false;
             }
         }
@@ -291,10 +331,10 @@ int Matrix::CalcDeterminant(const Matrix& matrice){
         return 0;
     }
     if(matrice.getRows() == 1){
-        return *matrice(0,0);
+        return matrice(0,0);
     }
     if(matrice.getRows() == 2){
-        return ((*matrice(0,0) * *matrice(1,1)) - (*matrice(0,1) * *matrice(1,0)));
+        return ((matrice(0,0) * matrice(1,1)) - (matrice(0,1) * matrice(1,0)));
     }
     int det = 0;
     Matrix temp(matrice.getRows()-1, matrice.getCols()-1);
@@ -302,16 +342,32 @@ int Matrix::CalcDeterminant(const Matrix& matrice){
         for(int j = 0; j < matrice.getRows(); j++){
             if(j!=i){
                 for(int k = 0; k < temp. getRows(); k++){
-                    *temp(j,k) = *matrice(j,k+1);
+                    temp(j,k) = matrice(j,k+1);
                 }
             }
             
         }
-        det += pow(-1,i) * *matrice(i,0) * CalcDeterminant(temp);
+        det += pow(-1,i) * matrice(i,0) * CalcDeterminant(temp);
     }
     return det;
 }
 
+Matrix Matrix::operator-() const{
+    Matrix tempMatrix(*this);
+    return (tempMatrix*(-1));
+}
+
+// Matrix& Matrix::operator=(const Matrix& matrice){
+//     Matrix tempMatrix(matrice);
+//     delete this->data;
+//     this->data = tempMatrix.data;
+//     tempMatrix.data = nullptr;
+//     this->rows = tempMatrix.rows;
+//     this->cols = tempMatrix.cols;
+//     this->rotations = tempMatrix.rotations;
+//     this->is_traspose = tempMatrix.is_traspose;
+//     return *this;
+// }
 Matrix::~Matrix(){
     delete[] data;
 }

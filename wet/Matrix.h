@@ -1,3 +1,4 @@
+#pragma once
 #include "Utilities.h"
 #include <iostream>
 
@@ -18,9 +19,9 @@ class Matrix {
     //int calculateIndex(int row, int coloum);
     int calculateIndex(int row, int coloum) const; //needs to move to private
     ~Matrix();
-    int* operator()(int row, int coloum);
-    int* operator()(int row, int coloum) const;
-    //int* operator()(int row, int coloum); //TODO ADD CONST
+    int& operator()(int row, int coloum);
+    int& operator()(int row, int coloum) const;
+    //int& operator()(int row, int coloum); //TODO ADD CONST
     bool sameDimensions(const Matrix& matrice) const; //needs to move to private
     bool canMultiply(const Matrix& matrice) const; //needs to move to private
     Matrix operator+(const Matrix& other) const;
@@ -65,6 +66,8 @@ class Matrix {
     Matrix& operator-=(const Matrix& matrice);
     friend bool operator==(const Matrix& left, const Matrix& right);
     static int CalcDeterminant(const Matrix& matrice);
+    Matrix operator-() const;
+    //Matrix& operator=(const Matrix& matrice);
 };
 Matrix operator*(int scalar, const Matrix& matrice);
 bool operator!=(const Matrix& left, const Matrix& right);

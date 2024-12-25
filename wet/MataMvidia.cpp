@@ -46,10 +46,10 @@ int MataMvidia::getNumberOfFrames() const{
 }
 
 Matrix MataMvidia::operator[](int index){
-    if(index>=0 && index<numberOfFrames){
-        return this->frames[index];
+    if(index < 0 || index > numberOfFrames){
+        exitWithError(MatamErrorType::OutOfBounds);
     }
-    exitWithError(MatamErrorType::OutOfBounds);  
+    return this->frames[index];  
 }
 
 MataMvidia& MataMvidia::operator+=(const MataMvidia& other){
@@ -57,8 +57,8 @@ MataMvidia& MataMvidia::operator+=(const MataMvidia& other){
     for(int i = 0; i< this->numberOfFrames; i++){
         newFrames[i] = this->frames[i];
     }
-    for(int i = this->numberOfFrames; i< this->numberOfFrames + other.numberOfFrames; i++){
-        newFrames[i] = other.frames[i];
+    for(int i = this->numberOfFrames; i < (this->numberOfFrames + other.numberOfFrames); i++){
+        newFrames[i] = other.frames[i - this->numberOfFrames];
     }
     this->numberOfFrames += other.numberOfFrames;
     delete[] this->frames;
@@ -80,6 +80,7 @@ MataMvidia operator+(const MataMvidia& leftMovie, const MataMvidia& rightMovie){
 std::ostream &operator<<(std::ostream &os, const MataMvidia& movie){
     os << "Movie Name: " <<  movie.movieName << std::endl;
     os << "Author: " <<  movie.creator << std::endl;
+    os << std::endl;
     for(int i = 0; i< movie.numberOfFrames; i++){
         os << "Frame " << i << ":" << std::endl;
         os << movie.frames[i] << std::endl;
