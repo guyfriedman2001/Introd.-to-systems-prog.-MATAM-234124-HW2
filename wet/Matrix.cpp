@@ -371,3 +371,35 @@ Matrix Matrix::operator-() const{
 Matrix::~Matrix(){
     delete[] data;
 }
+
+Matrix& Matrix::operator=(const Matrix& matrice){
+    Matrix tempMatrix(matrice);
+    delete this->data;
+    this->data = tempMatrix.data;
+    tempMatrix.data = nullptr;
+    this->rows = tempMatrix.rows;
+    this->cols = tempMatrix.cols;
+    this->rotations = tempMatrix.rotations;
+    this->is_traspose = tempMatrix.is_traspose;
+    return *this;
+}
+
+Matrix Matrix::operator-() const{
+    Matrix tempMatrix(*this);
+    return tempMatrix*(-1);
+}
+
+Matrix Matrix::operator+(const Matrix& matrice) const{
+    if (!(this->sameDimensions(matrice))){
+        exitWithError(MatamErrorType::UnmatchedSizes);
+    }
+    /**
+     * some code - still need to complete
+     */
+    Matrix tempMatrix(*this);
+    return tempMatrix*(-1);
+}
+
+Matrix Matrix::operator-(const Matrix& matrice) const{
+    return ((*this) + (-matrice));
+}
