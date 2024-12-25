@@ -114,36 +114,33 @@ inline bool Matrix::canMultiply(const Matrix& matrice) const{
     return (this->getCols() == matrice.getRows());
 }
 
-
-
-Matrix Matrix::operator+=(const Matrix& other){
-    if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
-    int resRows = this->getRows();
-    int resCols = this->getCols();
-    for (int i = 0; i < resRows; ++i) {
-        for (int j = 0; j < resCols; ++j) {
-            *(*this)(i, j) = *(*this)(i, j) + *other(i, j);
-        }
-    }
-    return *this;
-    
-}
-
 Matrix Matrix::operator+(const Matrix& other) const {
     if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
     int resRows = this->getRows();
     int resCols = this->getCols();
-    Matrix result(resRows, resCols, 0);
-    result += *this;
-    result += other;
-
-    //for (int i = 0; i < resRows; ++i) { //FIXME after debugging if everything is working, delete these commented lines
-    //    for (int j = 0; j < resCols; ++j) {
-    //        *result(i, j) = *(*this)(i, j) + *other(i, j);
-    //    }
-    //}
+    Matrix result(other);
+    for (int i = 0; i < resRows; ++i) { 
+        for (int j = 0; j < resCols; ++j) {
+            *result(i, j) += *(*this)(i, j);
+        }
+    }
 
     return result;
+}
+
+Matrix& Matrix::operator+=(const Matrix& other){
+    if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
+    *this = *this + other;
+    return *this;
+    // int resRows = this->getRows();
+    // int resCols = this->getCols();
+    // for (int i = 0; i < resRows; ++i) {
+    //     for (int j = 0; j < resCols; ++j) {
+    //         *(*this)(i, j) = *(*this)(i, j) + *other(i, j);
+    //     }
+    // }
+    // return *this;
+    
 }
 
 /**
@@ -208,7 +205,7 @@ Matrix Matrix::rotateCounterClockwise() const{
     return counterClockwise;
 }
 
-Matrix Matrix::operator*(int scalar){
+Matrix Matrix::operator*(int scalar) const{
      Matrix tempMatrix(*this);
      for(int i = 0; i<rows*cols; i++){
         tempMatrix.data[i] *= scalar;
@@ -221,7 +218,7 @@ Matrix& Matrix::operator*=(int scalar){
     *this = *this * scalar;
     return *this;
 }
-Matrix Matrix::operator*(const Matrix& matrice){
+Matrix Matrix::operator*(const Matrix& matrice) const{
     if(!(canMultiply(matrice))){
         exitWithError(MatamErrorType::UnmatchedSizes);
     }
@@ -255,6 +252,66 @@ std::ostream &operator<<(std::ostream &os, const Matrix& matrice){
     }
     return os;
 }
+
+Matrix Matrix::operator-(const Matrix& matrice) const{
+    Matrix tempMatrix(matrice);
+    tempMatrix = -tempMatrix;
+    return (*this + tempMatrix);
+}
+
+Matrix& Matrix::operator-=(const Matrix& matrice){
+    *this = *this - matrice;
+    return *this;    
+}
+
+bool operator==(const Matrix& left, const Matrix& right){
+    if(!left.sameDimensions(right)){
+        return false;
+    }
+    for(int i = 0; i < left.getRows(); i++){
+        for(int j = 0; j < left.getCols(); j++){
+            if(*left(i,j) != *right(i,j)){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool operator!=(const Matrix& left, const Matrix& right){
+    return (!(left == right));
+}
+
+int Matrix::CalcDeterminant(const Matrix& matrice){
+    if(matrice.getRows() != matrice.getCols()){
+        exitWithError(MatamErrorType::NotSquareMatrix);
+        return 0;        
+    }
+    if(matrice.getRows() == 0){
+        return 0;
+    }
+    if(matrice.getRows() == 1){
+        return *matrice(0,0);
+    }
+    if(matrice.getRows() == 2){
+        return ((*matrice(0,0) * *matrice(1,1)) - (*matrice(0,1) * *matrice(1,0)));
+    }
+    int det = 0;
+    Matrix temp(matrice.getRows()-1, matrice.getCols()-1);
+    for(int i = 0; i< matrice.getRows(); i++){
+        for(int j = 0; j < matrice.getRows(); j++){
+            if(j!=i){
+                for(int k = 0; k < temp. getRows(); k++){
+                    *temp(j,k) = *matrice(j,k+1);
+                }
+            }
+            
+        }
+        det += pow(-1,i) * *matrice(i,0) * CalcDeterminant(temp);
+    }
+    return det;
+}
+
 Matrix::~Matrix(){
     delete[] data;
 }

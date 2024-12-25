@@ -24,7 +24,7 @@ class Matrix {
     bool sameDimensions(const Matrix& matrice) const; //needs to move to private
     bool canMultiply(const Matrix& matrice) const; //needs to move to private
     Matrix operator+(const Matrix& other) const;
-    Matrix operator+=(const Matrix& other);
+    Matrix& operator+=(const Matrix& other);
 
     /**
      * check if a given input is within the matrix bounds
@@ -56,15 +56,20 @@ class Matrix {
      */
     Matrix transpose() const;
 
-    Matrix operator*(int scalar);
+    Matrix operator*(int scalar) const;
     Matrix& operator*=(int scalar);
-    Matrix operator*(const Matrix& matrice);
+    Matrix operator*(const Matrix& matrice) const;
     Matrix& operator*=(const Matrix& matrice);
     Matrix operator-() const;
     Matrix operator+(const Matrix& matrice) const;
     Matrix operator-(const Matrix& matrice) const;
 
     friend std::ostream &operator<<(std::ostream &os, const Matrix& matrice);
+    Matrix operator-(const Matrix& matrice) const;
+    Matrix& operator-=(const Matrix& matrice);
+    friend bool operator==(const Matrix& left, const Matrix& right);
+    static int CalcDeterminant(const Matrix& matrice);
 };
 Matrix operator*(int scalar, const Matrix& matrice);
-//Matrix operator+(const Matrix& left, const Matrix& right);
+bool operator!=(const Matrix& left, const Matrix& right);
+//Matrix operator+(const Matrix& left, const Matrix& right);s
