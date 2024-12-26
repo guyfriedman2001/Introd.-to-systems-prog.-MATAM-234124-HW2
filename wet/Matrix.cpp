@@ -1,5 +1,4 @@
 #include "Matrix.h"
-#include <cmath>
 
 Matrix::Matrix(int rows, int cols, int initiale) : rows(rows), cols(cols), data(nullptr), is_traspose(false), rotations(0) {
     if(rows > 0 && cols > 0){
@@ -58,85 +57,41 @@ Matrix& Matrix::operator=(const Matrix& other){
     return *this;
 }
 
-/** 
-//TODO check if maybe can delete Dis
-int Matrix::calculateIndex(int i, int j){
-    this->checkInput(i,j);
-    int rotations = this->rotations % 4;
-    int actualN = this->getRows();
-    int actualM = this->getCols();
-    int actualI = (this->is_traspose)?j:i;
-    int actualJ = (this->is_traspose)?i:j;
-
-    int temp = actualI;
-    int temp2 = actualJ;
-    switch(rotations){
-        case(1):
-            actualI = actualJ;
-            actualJ = actualN - 1 - temp;
-            break;
-        case(2):
-            actualI = actualN - 1 - temp;
-            actualJ = actualM - 1 - temp2;
-            break;
-        case(3):
-            actualI = actualM - 1 - actualJ;
-            actualJ = temp;
-            break;
-        default:
-            break;
-    }
-    return actualI*actualN + actualJ;
-}
-*/
-
 int Matrix::calculateIndex(int i, int j) const{
     this->checkInput(i,j);
     int actualRotations = this->rotations % 4;
-    // int actualN = this->getRows();
-    // int actualM = this->getCols();
-    int actualN = this->rows;
-    int actualM = this->cols;
+    int actualCols = this->cols;
+    int actualRows = this->rows;
     int actualI = (this->is_traspose)?j:i;
     int actualJ = (this->is_traspose)?i:j;
-
-    int temp = actualI;
-    int temp2 = actualJ;
+    int index = 0;
     switch(actualRotations){
         case(0):
-        // if(this->is_traspose){
-        //     return actualJ*actualM + actualI;
-        // }
-        break;
+            index = actualCols*actualI + actualJ;
+            break;
         case(1):
-            actualI = actualJ;
-            actualJ = actualN - 1 - temp;
+            index = (actualRows - actualJ - 1)*actualCols + actualI;
             break;
         case(2):
-            actualI = actualN - 1 - temp;
-            actualJ = actualM - 1 - temp2;
-            // if(this->is_traspose){
-            //     return actualJ*actualM + actualI;
-            // }
+            index = (actualRows - actualI - 1)*actualCols + actualCols - actualJ - 1;
             break;
         case(3):
-            // actualI = actualJ - actualI;
-            // actualJ = 1 + actualJ;
-            actualI = actualM  - actualJ - 1;
-            actualJ = temp;
+            index = actualCols*actualJ + actualCols - actualI - 1;
             break;
         default:
             break;
     }
-    return actualJ*actualN + actualI;
+    return index;
 }
 
 int& Matrix::operator()(int row, int coloum){ //TODO ADD CONST VERSION
-    return (this->data[this->calculateIndex(row,coloum)]);
+    int index = this->calculateIndex(row,coloum);
+    return (this->data[index]);
 }
 
 int& Matrix::operator()(int row, int coloum) const{ //TODO ADD CONST VERSION
-    return (this->data[this->calculateIndex(row,coloum)]);
+    int index = this->calculateIndex(row,coloum);
+    return (this->data[index]);
 }
 
 inline bool Matrix::sameDimensions(const Matrix& matrice) const{
@@ -151,77 +106,48 @@ Matrix Matrix::operator+(const Matrix& other) const {
     if (!this->sameDimensions(other)){
         exitWithError(MatamErrorType::UnmatchedSizes);
     }
-    int resRows = this->getRows();
-    int resCols = this->getCols();
+    int resRows = other.getRows();
+    int resCols = other.getCols();
     Matrix result(other);
     for (int i = 0; i < resRows; i++) { 
         for (int j = 0; j < resCols; j++) {
-            result(i, j) += (*this)(i, j);
+            result(i, j) = (*this)(i, j) + result(i, j);
         }
     }
     return result;
 }
 
 Matrix& Matrix::operator+=(const Matrix& other){
-    if (!this->sameDimensions(other)){exitWithError(MatamErrorType::UnmatchedSizes);}
-    *this = *this + other;
-    return *this;
-    // int resRows = this->getRows();
-    // int resCols = this->getCols();
-    // for (int i = 0; i < resRows; ++i) {
-    //     for (int j = 0; j < resCols; ++j) {
-    //         *(*this)(i, j) = *(*this)(i, j) + *other(i, j);
-    //     }
-    // }
-    // return *this;
-    
-}
-
-/**
- * 
-Matrix Matrix::operator+(const Matrix& left, const Matrix& right) {
-    if (!this->sameDimensions(other)) {exitWithError(MatamErrorType::UnmatchedSizes);}
-
-    Matrix result(this->rows, this->cols, 0);
-
-    for (int i = 0; i < this->getRows(); ++i) {
-        for (int j = 0; j < this->getCols(); ++j) {
-            *result(i, j) = *(*this)(i, j) + *other(i, j);
-        }
+    if (!this->sameDimensions(other)){
+        exitWithError(MatamErrorType::UnmatchedSizes);
     }
-
-    return result;
+    *this = *this + other;
+    return *this;    
 }
- */
 
 void Matrix::checkInput(int row, int coloum) const{
     int thisRows = this->getRows();
     int thisCols = this->getCols();
-    //int actualI = (this->is_traspose)?row:coloum;
-    //int actualJ = (this->is_traspose)?row:coloum;
-    //if ((thisRows <= actualI)||(thisCols <= actualJ)){
-    //    exitWithError(MatamErrorType::OutOfBounds);
-    //}
     if ((thisRows <= row)||(thisCols <= coloum)){
         exitWithError(MatamErrorType::OutOfBounds);
     }
 }
 
-int Matrix::CalcFrobeniusNorm(const Matrix& matrice){
+double Matrix::CalcFrobeniusNorm(const Matrix& matrice){
     return matrice.CalcFrobeniusNorm();
 }
 
-int Matrix::CalcFrobeniusNorm()const{
-    int sum = 0;
+double Matrix::CalcFrobeniusNorm()const{
+    double sum = 0;
     int resRows = this->getRows();
     int resCols = this->getCols();
     for (int i = 0; i < resRows; ++i) {
         for (int j = 0; j < resCols; ++j) {
             int item = (*this)(i, j);
-            sum += sqrt((abs(item*item)));
+            sum += abs(item*item);
         }
     }
-    return sum;
+    return sqrt(sum);
 }
 
 Matrix Matrix::transpose() const{
@@ -232,13 +158,13 @@ Matrix Matrix::transpose() const{
 
 Matrix Matrix::rotateClockwise() const{
     Matrix clockwise(*this);
-    clockwise.rotations += 3; 
+    clockwise.rotations += 1; 
     return clockwise;
 }
 
 Matrix Matrix::rotateCounterClockwise() const{
     Matrix counterClockwise(*this);
-    counterClockwise.rotations += 1; 
+    counterClockwise.rotations += 3; 
     return counterClockwise;
 }
 
@@ -250,26 +176,26 @@ Matrix Matrix::operator*(int scalar) const{
      return tempMatrix;
 }
 
-
 Matrix& Matrix::operator*=(int scalar){
     *this = *this * scalar;
     return *this;
 }
+
 Matrix Matrix::operator*(const Matrix& matrice) const{
     if(!(canMultiply(matrice))){
         exitWithError(MatamErrorType::UnmatchedSizes);
     }
     Matrix multpliedMatrix(this->getRows(), matrice.getCols(), 0);
-    for (int i = 0; i <  matrice.getCols(); ++i) {
-        for (int j = 0; j < this->getRows(); ++j) {
-            for(int k=0; k< matrice.getRows(); k++){
+    for (int i = 0; i <  matrice.getCols(); i++) {
+        for (int j = 0; j < this->getRows(); j++) {
+            for(int k=0; k < matrice.getRows(); k++){
                 (multpliedMatrix)(j,i) += (*this)(j,k) * (matrice)(k,i);
             } 
         }
     }
     return multpliedMatrix;
-
 }
+
 Matrix& Matrix::operator*=(const Matrix& matrice){
     *this = *this * matrice;
     return *this;
@@ -293,17 +219,6 @@ std::ostream &operator<<(std::ostream &os, const Matrix& matrice){
     return os;
 }
 
-Matrix Matrix::operator-(const Matrix& matrice) const{
-    Matrix tempMatrix(matrice);
-    tempMatrix = -tempMatrix;
-    return (*this + tempMatrix);
-}
-
-Matrix& Matrix::operator-=(const Matrix& matrice){
-    *this = *this - matrice;
-    return *this;    
-}
-
 bool operator==(const Matrix& left, const Matrix& right){
     if(!left.sameDimensions(right)){
         return false;
@@ -322,84 +237,22 @@ bool operator!=(const Matrix& left, const Matrix& right){
     return (!(left == right));
 }
 
-int Matrix::CalcDeterminant(const Matrix& matrice){
-    if(matrice.getRows() != matrice.getCols()){
-        exitWithError(MatamErrorType::NotSquareMatrix);
-        return 0;        
-    }
-    if(matrice.getRows() == 0){
-        return 0;
-    }
-    if(matrice.getRows() == 1){
-        return matrice(0,0);
-    }
-    if(matrice.getRows() == 2){
-        return ((matrice(0,0) * matrice(1,1)) - (matrice(0,1) * matrice(1,0)));
-    }
-    int det = 0;
-    Matrix temp(matrice.getRows()-1, matrice.getCols()-1);
-    for(int i = 0; i< matrice.getRows(); i++){
-        for(int j = 0; j < matrice.getRows(); j++){
-            if(j!=i){
-                for(int k = 0; k < temp. getRows(); k++){
-                    temp(j,k) = matrice(j,k+1);
-                }
-            }
-            
-        }
-        det += pow(-1,i) * matrice(i,0) * CalcDeterminant(temp);
-    }
-    return det;
-}
-
 Matrix Matrix::operator-() const{
-    Matrix tempMatrix(*this);
-    return (tempMatrix*(-1));
-}
-
-// Matrix& Matrix::operator=(const Matrix& matrice){
-//     Matrix tempMatrix(matrice);
-//     delete this->data;
-//     this->data = tempMatrix.data;
-//     tempMatrix.data = nullptr;
-//     this->rows = tempMatrix.rows;
-//     this->cols = tempMatrix.cols;
-//     this->rotations = tempMatrix.rotations;
-//     this->is_traspose = tempMatrix.is_traspose;
-//     return *this;
-// }
-Matrix::~Matrix(){
-    delete[] data;
-}
-
-Matrix& Matrix::operator=(const Matrix& matrice){
-    Matrix tempMatrix(matrice);
-    delete this->data;
-    this->data = tempMatrix.data;
-    tempMatrix.data = nullptr;
-    this->rows = tempMatrix.rows;
-    this->cols = tempMatrix.cols;
-    this->rotations = tempMatrix.rotations;
-    this->is_traspose = tempMatrix.is_traspose;
-    return *this;
-}
-
-Matrix Matrix::operator-() const{
-    Matrix tempMatrix(*this);
-    return tempMatrix*(-1);
-}
-
-Matrix Matrix::operator+(const Matrix& matrice) const{
-    if (!(this->sameDimensions(matrice))){
-        exitWithError(MatamErrorType::UnmatchedSizes);
-    }
-    /**
-     * some code - still need to complete
-     */
     Matrix tempMatrix(*this);
     return tempMatrix*(-1);
 }
 
 Matrix Matrix::operator-(const Matrix& matrice) const{
-    return ((*this) + (-matrice));
+    Matrix tempMatrix(matrice);
+    tempMatrix = -tempMatrix;
+    return (*this + tempMatrix);
+}
+
+Matrix& Matrix::operator-=(const Matrix& matrice){
+    *this = *this - matrice;
+    return *this;    
+}
+
+Matrix::~Matrix(){
+    delete[] data;
 }

@@ -4,12 +4,17 @@
 #include <iostream>
 
 MataMvidia::MataMvidia(const std::string& movieName, const std::string& creator, Matrix* frames, int numberOfFrames): 
-movieName(movieName), creator(creator),frames(new Matrix[numberOfFrames]), numberOfFrames(numberOfFrames) {
+movieName(movieName), creator(creator),frames(nullptr), numberOfFrames(numberOfFrames) {
     if(numberOfFrames < 0){
         exitWithError(MatamErrorType::OutOfBounds); 
     }
-    for(int i=0; i<numberOfFrames; i++){
-        this->frames[i] =  frames[i];
+    if(numberOfFrames != 0){
+        this->frames = new Matrix[numberOfFrames]; 
+        if(frames != nullptr){
+            for(int i=0; i < numberOfFrames; i++){
+                this->frames[i] =  frames[i];
+            }
+        }
     }
  }
 MataMvidia::MataMvidia(const MataMvidia& other): movieName(other.movieName),
@@ -17,14 +22,15 @@ MataMvidia::MataMvidia(const MataMvidia& other): movieName(other.movieName),
     for(int i=0; i<numberOfFrames; i++){
         this->frames[i] =  other.frames[i];
     }
-
 }
 MataMvidia& MataMvidia::operator=(const MataMvidia& other){
     if(this == &other)
     {
         return *this;
     }
-    delete[] this->frames;
+    if(this->frames != nullptr){
+        delete[] this->frames;
+    }
     movieName = other.movieName;
     creator = other.creator;
     numberOfFrames = other.numberOfFrames;
@@ -34,18 +40,19 @@ MataMvidia& MataMvidia::operator=(const MataMvidia& other){
     }
     return *this;
 }
+//do we need to delete this??
 
-std::string MataMvidia::getMovieName() const{
-    return this->movieName;
-}
-std::string MataMvidia::getcreatorName() const{
-    return this->creator;
-}
-int MataMvidia::getNumberOfFrames() const{
-    return this->numberOfFrames;
-}
+// std::string MataMvidia::getMovieName() const{
+//     return this->movieName;
+// }
+// std::string MataMvidia::getcreatorName() const{
+//     return this->creator;
+// }
+// int MataMvidia::getNumberOfFrames() const{
+//     return this->numberOfFrames;
+// }
 
-Matrix MataMvidia::operator[](int index){
+Matrix& MataMvidia::operator[](int index){
     if(index < 0 || index > numberOfFrames){
         exitWithError(MatamErrorType::OutOfBounds);
     }

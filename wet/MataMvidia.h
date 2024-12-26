@@ -14,10 +14,11 @@ class MataMvidia{
     MataMvidia(const std::string& movieName, const std::string& creator, Matrix* frames, int numberOfFrames);
     MataMvidia(const MataMvidia& other);
     MataMvidia& operator=(const MataMvidia& other);
-    std::string getMovieName() const;
-    std::string getcreatorName() const;
-    int getNumberOfFrames() const;
-    Matrix operator[](int index);
+    //do we need to delete this??
+    // std::string getMovieName() const;
+    // std::string getcreatorName() const;
+    // int getNumberOfFrames() const;
+    Matrix& operator[](int index);
     MataMvidia& operator+=(const MataMvidia& other);
     MataMvidia& operator+=(const Matrix& newFrame); 
     friend std::ostream &operator<<(std::ostream &os, const MataMvidia &movie);
