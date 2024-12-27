@@ -14,12 +14,12 @@ class Matrix {
     /**
      * Calculate the index in the underlying data array for a given row and column.
      * 
-     * @param row - the row index (0-based).
-     * @param coloum - the column index (0-based).
+     * @param row - the row index.
+     * @param coloum - the column index.
      * 
      * @return - the calculated index in the data array.
      */
-    int calculateIndex(int row, int coloum) const; //TODO check documentation
+    int calculateIndex(int row, int coloum) const;
 
     /**
      * Check if the dimensions of this matrix match the dimensions of another matrix.
@@ -28,21 +28,23 @@ class Matrix {
      * 
      * @return - true if the dimensions match, false otherwise.
      */
-    bool sameDimensions(const Matrix& matrice) const; //TODO check documentation
+    bool sameDimensions(const Matrix& matrice) const;
 
     /**
      * Check if this matrix can be multiplied by another matrix.
      * 
+     * @param this - the left matrix in the multiplication.
      * @param matrice - the matrix to check compatibility for multiplication.
      * 
      * @return - true if the matrices can be multiplied, false otherwise.
      */
-    bool canMultiply(const Matrix& matrice) const; //TODO check documentation
+    bool canMultiply(const Matrix& matrice) const;
 
     /**
      * check if a given input is within the matrix bounds
-     * if it is - do nothing
-     * if it is not - write appropriate message to cerr
+     * 
+     * @param row - the row of the given input.
+     * @param coloum - the coloum of the given input.
      */
     void checkInput(int row, int coloum) const;
     
@@ -93,10 +95,11 @@ class Matrix {
      * Assignment operator for deep copying another matrix.
      * 
      * @param other - the matrix to copy.
+     * @param this - the matrix that the result is going to be assigned to
      * 
-     * @return - a reference to this matrix after copying.
+     * @return - a reference to @param this matrix after copying.
      */
-    Matrix& operator=(const Matrix& other); //TODO check documentation
+    Matrix& operator=(const Matrix& other);
 
     /**
      * the () allows acces and modifications to the numbers of the
@@ -149,14 +152,14 @@ class Matrix {
      * 
      * @return - the Frobenius norm as a double.
      */
-    static double CalcFrobeniusNorm(const Matrix& matrice); //TODO check documentation
+    static double CalcFrobeniusNorm(const Matrix& matrice);
 
     /**
      * Calculate the Frobenius norm of this matrix.
      * 
      * @return - the Frobenius norm as a double.
      */
-    double CalcFrobeniusNorm()const; //TODO check documentation
+    double CalcFrobeniusNorm()const;
 
     /**
      * return a copy the matrix rotated clockwise 90 degrees
@@ -186,7 +189,7 @@ class Matrix {
      * 
      * @return - a new matrix with the result of the scalar multiplication.
      */
-    Matrix operator*(int scalar) const; //TODO check documentation
+    Matrix operator*(int scalar) const;
 
     /**
      * Perform scalar multiplication on this matrix and update it.
@@ -195,7 +198,7 @@ class Matrix {
      * 
      * @return - a reference to this matrix after the operation.
      */
-    Matrix& operator*=(int scalar); //TODO check documentation
+    Matrix& operator*=(int scalar);
 
     /**
      * Perform matrix multiplication with another matrix.
@@ -204,7 +207,7 @@ class Matrix {
      * 
      * @return - a new matrix with the result of the multiplication.
      */
-    Matrix operator*(const Matrix& matrice) const; //TODO add documentation
+    Matrix operator*(const Matrix& matrice) const;
 
     /**
      * Perform matrix multiplication with another matrix and update this matrix.
@@ -213,7 +216,7 @@ class Matrix {
      * 
      * @return - a reference to this matrix after the operation.
      */
-    Matrix& operator*=(const Matrix& matrice); //TODO add documentation
+    Matrix& operator*=(const Matrix& matrice);
 
     /**
      * Perform subtraction of another matrix from this matrix.
@@ -222,7 +225,7 @@ class Matrix {
      * 
      * @return - a new matrix with the result of the subtraction.
      */
-    Matrix operator-(const Matrix& matrice) const; //TODO add documentation
+    Matrix operator-(const Matrix& matrice) const;
 
     /**
      * Overload of the stream insertion operator to output the matrix.
@@ -232,7 +235,7 @@ class Matrix {
      * 
      * @return - the output stream with the matrix's content.
      */
-    friend std::ostream &operator<<(std::ostream &os, const Matrix& matrice); //TODO add documentation
+    friend std::ostream &operator<<(std::ostream &os, const Matrix& matrice);
 
     /**
      * Perform subtraction of another matrix from this matrix and update it.
@@ -241,7 +244,7 @@ class Matrix {
      * 
      * @return - a reference to this matrix after the operation.
      */
-    Matrix& operator-=(const Matrix& matrice); //TODO add documentation
+    Matrix& operator-=(const Matrix& matrice);
 
     /**
      * Overload of the equality operator to compare two matrices.
@@ -251,19 +254,19 @@ class Matrix {
      * 
      * @return - true if the matrices are equal, false otherwise.
      */
-    friend bool operator==(const Matrix& left, const Matrix& right); //TODO add documentation
+    friend bool operator==(const Matrix& left, const Matrix& right);
 
     /**
      * Negate this matrix (unary minus operator).
      * 
      * @return - a new matrix with all elements negated.
      */
-    Matrix operator-() const; //TODO add documentation
+    Matrix operator-() const;
 
     /**
      * Destructor to free allocated memory.
      */
-    ~Matrix(); //TODO add documentation
+    ~Matrix();
 };
 
 /**
@@ -275,7 +278,7 @@ class Matrix {
  * 
  * @return - a new matrix with the result of the multiplication.
  */
-Matrix operator*(int scalar, const Matrix& matrice); //TODO add documentation
+Matrix operator*(int scalar, const Matrix& matrice);
 
 /**
  * Overload of the inequality operator to compare two matrices.
@@ -285,7 +288,7 @@ Matrix operator*(int scalar, const Matrix& matrice); //TODO add documentation
  * 
  * @return - true if the matrices are not equal, false otherwise.
  */
-bool operator!=(const Matrix& left, const Matrix& right); //TODO add documentation
+bool operator!=(const Matrix& left, const Matrix& right);
 
 /**
  * Calculate the determinant of a square matrix.
@@ -295,7 +298,7 @@ bool operator!=(const Matrix& left, const Matrix& right); //TODO add documentati
  * @return - the determinant of the matrix. If the matrix is not square,
  *           exits with an error and returns 0.
  */
-static int CalcDeterminant(const Matrix& matrice){ //TODO add documentation
+static int CalcDeterminant(const Matrix& matrice){
     if(matrice.getRows() != matrice.getCols()){
         exitWithError(MatamErrorType::NotSquareMatrix);
         return 0;        
