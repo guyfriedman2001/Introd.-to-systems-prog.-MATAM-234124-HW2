@@ -155,13 +155,6 @@ class Matrix {
     static double CalcFrobeniusNorm(const Matrix& matrice);
 
     /**
-     * Calculate the Frobenius norm of this matrix.
-     * 
-     * @return - the Frobenius norm as a double.
-     */
-    double CalcFrobeniusNorm()const;
-
-    /**
      * return a copy the matrix rotated clockwise 90 degrees
      * 
      * @return - a copy of the called matrix, rotated 90 degrees clockwise

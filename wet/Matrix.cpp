@@ -134,16 +134,12 @@ void Matrix::checkInput(int row, int coloum) const{
 }
 
 double Matrix::CalcFrobeniusNorm(const Matrix& matrice){
-    return matrice.CalcFrobeniusNorm();
-}
-
-double Matrix::CalcFrobeniusNorm()const{
     double sum = 0;
-    int resRows = this->getRows();
-    int resCols = this->getCols();
+    int resRows = matrice.getRows();
+    int resCols = matrice.getCols();
     for (int i = 0; i < resRows; ++i) {
         for (int j = 0; j < resCols; ++j) {
-            int item = (*this)(i, j);
+            int item = matrice(i, j);
             sum += abs(item*item);
         }
     }
