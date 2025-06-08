@@ -19,9 +19,10 @@ class Pirate {
 private:
     string name;
     DEVIL_FRUIT devilFruit;
+    int bounty;
 
 public:
-    Pirate(const string& name, DEVIL_FRUIT devilFruit = DEVIL_FRUIT::NONE);
+    Pirate(const string& name, DEVIL_FRUIT devilFruit = DEVIL_FRUIT::NONE, int bounty = 0);
 
     ~Pirate() = default;
 
@@ -30,6 +31,10 @@ public:
 
     string getName();
     DEVIL_FRUIT getDevilFruit();
+
+    int getBounty() const;
+
+    void setBounty(const int&);
 
     friend std::ostream &operator<<(std::ostream &os, const Pirate &pirate);
 };
